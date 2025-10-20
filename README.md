@@ -37,6 +37,7 @@ fire ball (green)
 5 mins - Circlur include issue
 
 1hr 10ins - Screen Shake
+
 2hr - New powerup, implemented it one way then realised i could do it in a both better and cleaner way. The powerup is a "Split" powerup where when grabbed another ball will spawn and act like the first one, when this split ball passes the paddle, it deletes itself rather than health. These split balls can split themselves.
 
 
