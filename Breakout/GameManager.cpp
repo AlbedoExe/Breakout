@@ -4,7 +4,7 @@
 #include <iostream>
 
 GameManager::GameManager(sf::RenderWindow* window)
-    : _window(window), _paddle(nullptr), _ball(nullptr), _brickManager(nullptr), _powerupManager(nullptr),
+    : _window(window), _paddle(nullptr), _brickManager(nullptr), _powerupManager(nullptr),
     _messagingSystem(nullptr), _ui(nullptr), _pause(false), _time(0.f), _lives(3), _pauseHold(0.f), _levelComplete(false),
     _powerupInEffect({ none,0.f }), _timeLastPowerupSpawned(0.f)
 {
@@ -20,8 +20,8 @@ void GameManager::initialize()
     _paddle = new Paddle(_window);
     _brickManager = new BrickManager(_window, this);
     _messagingSystem = new MessagingSystem(_window);
-    _ball = new Ball(_window, 400.0f, this); 
-    _powerupManager = new PowerupManager(_window, _paddle, _ball);
+    _balls.emplace_back(new Ball(_window, 400.0f, this, false));
+    _powerupManager = new PowerupManager(_window, _paddle, _balls.front());
     _ui = new UI(_window, _lives, this);
 
     _OriginalCentre = _window->getView().getCenter();
@@ -86,7 +86,12 @@ void GameManager::update(float dt)
 
     // update everything 
     _paddle->update(dt);
-    _ball->update(dt);
+
+    for (int i = 0; i < _balls.size(); i++) 
+    {
+        _balls[i]->update(dt);
+    }
+
     _powerupManager->update(dt);
 
     // screen shake
@@ -127,7 +132,13 @@ void GameManager::loseLife()
 void GameManager::render()
 {
     _paddle->render();
-    _ball->render();
+
+    for (int i = 0; i < _balls.size(); i++) 
+    {
+        _balls[i]->render();
+    }
+    
+
     _brickManager->render();
     _powerupManager->render();
     _window->draw(_masterText);
@@ -137,6 +148,20 @@ void GameManager::render()
 void GameManager::levelComplete()
 {
     _levelComplete = true;
+}
+
+void GameManager::splitBall()
+{
+    _balls.emplace_back(new Ball(_window, 400.0f, this, true));
+
+}
+
+void GameManager::deleteBall()
+{
+    if (_balls.size() > 1)
+    {
+        _balls.pop_back();
+    }
 }
 
 sf::RenderWindow* GameManager::getWindow() const { return _window; }

@@ -8,12 +8,13 @@ class GameManager;  // forward declaration
 
 class Ball {
 public:
-    Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager);
+    Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall);
     ~Ball();
     void update(float dt);
     void render();
     void setVelocity(float coeff, float duration);
     void setFireBall(float duration);
+    void splitBall(float duration);
 
 private:
     sf::CircleShape _sprite;
@@ -25,6 +26,10 @@ private:
     float _timeWithPowerupEffect;
 
     GameManager* _gameManager;  // Reference to the GameManager
+
+    //My variables
+    bool _hasSplit = false;
+    bool _split = false;
 
 
     static constexpr float RADIUS = 10.0f;      

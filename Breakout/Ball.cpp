@@ -1,8 +1,8 @@
 #include "Ball.h"
 #include "GameManager.h" // avoid cicular dependencies
 
-Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager)
-    : _window(window), _velocity(velocity), _gameManager(gameManager),
+Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall)
+    : _window(window), _velocity(velocity), _gameManager(gameManager), _split(splitBall),
     _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({1,1})
 {
     _sprite.setRadius(RADIUS);
@@ -12,6 +12,7 @@ Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager)
 
 Ball::~Ball()
 {
+  
 }
 
 void Ball::update(float dt)
@@ -62,9 +63,15 @@ void Ball::update(float dt)
     // lose life bounce
     if (position.y > windowDimensions.y)
     {
-        _sprite.setPosition(0, 300);
-        _direction = { 1, 1 };
-        _gameManager->loseLife();
+        if (!_split) {
+            _sprite.setPosition(0, 300);
+            _direction = { 1, 1 };
+            _gameManager->loseLife();
+        }
+        else 
+        {
+            _gameManager->deleteBall();
+        }
     }
 
     // collision with paddle
@@ -95,6 +102,7 @@ void Ball::update(float dt)
 void Ball::render()
 {
     _window->draw(_sprite);
+
 }
 
 void Ball::setVelocity(float coeff, float duration)
@@ -113,4 +121,18 @@ void Ball::setFireBall(float duration)
     }
     _isFireBall = false;
     _timeWithPowerupEffect = 0.f;    
+}
+
+void Ball::splitBall(float duration) 
+{
+    if (duration) {
+
+        if (!_hasSplit && !_split) {
+            _gameManager->splitBall();
+        }
+        _timeWithPowerupEffect = duration;
+        return;
+    }
+    _gameManager->deleteBall();
+    _timeWithPowerupEffect = 0.f;
 }
