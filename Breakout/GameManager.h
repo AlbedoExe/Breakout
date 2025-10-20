@@ -36,6 +36,14 @@ private:
     bool _levelComplete;
     std::pair<POWERUPS, float> _powerupInEffect;
 
+    //Added Variables
+    float _RandomAngle;
+    int _ShakeRadius;
+    sf::Vector2f _CameraOffset;
+    sf::View _CameraView;
+    sf::Vector2f _OriginalCentre;
+    int _ShakeTick;
+
     sf::Font _font;
     sf::Text _masterText;
 

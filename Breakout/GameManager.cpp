@@ -24,6 +24,9 @@ void GameManager::initialize()
     _powerupManager = new PowerupManager(_window, _paddle, _ball);
     _ui = new UI(_window, _lives, this);
 
+    _OriginalCentre = _window->getView().getCenter();
+
+
     // Create bricks
     _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);
 }
@@ -85,6 +88,25 @@ void GameManager::update(float dt)
     _paddle->update(dt);
     _ball->update(dt);
     _powerupManager->update(dt);
+
+    // screen shake
+    _ShakeTick++;
+
+    if (_ShakeRadius > 2.0) {
+        if (_ShakeTick >= 140) {
+            _ShakeRadius *= 0.9;
+            _RandomAngle += (270 + rand() % 60);
+            _CameraOffset = { sin(_RandomAngle) * _ShakeRadius, cos(_RandomAngle) * _ShakeRadius };
+            _CameraView.setCenter(_CameraView.getCenter() + _CameraOffset);
+            _window->setView(_CameraView);
+            _ShakeTick = 0;
+        }
+    }
+    else {
+        _CameraView.setCenter(_OriginalCentre);
+        _window->setView(_CameraView);
+    }
+
 }
 
 void GameManager::loseLife()
@@ -93,6 +115,13 @@ void GameManager::loseLife()
     _ui->lifeLost(_lives);
 
     // TODO screen shake.
+
+    _ShakeRadius = 30;
+    _RandomAngle = rand() % 360;
+    _CameraOffset = { sin(_RandomAngle) * _ShakeRadius, cos(_RandomAngle) * _ShakeRadius };
+    _CameraView = _window->getView();
+    _CameraView.setCenter(_CameraView.getCenter() + _CameraOffset);
+
 }
 
 void GameManager::render()
