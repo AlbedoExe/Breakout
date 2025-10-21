@@ -7,6 +7,7 @@
 #include "PowerupManager.h"
 #include "MessagingSystem.h"
 #include "UI.h"
+#include "SFXManager.h"
 
 
 
@@ -27,6 +28,7 @@ public:
     PowerupManager* getPowerupManager() const;
     sf::RenderWindow* getWindow() const;
     UI* getUI() const;
+    SFXManager* getSFXManager() const;
 
 
 private:
@@ -38,7 +40,7 @@ private:
     bool _levelComplete;
     std::pair<POWERUPS, float> _powerupInEffect;
 
-    //Added Variables
+    //Camera shake Variables
     float _RandomAngle;
     int _ShakeRadius;
     sf::Vector2f _CameraOffset;
@@ -56,6 +58,7 @@ private:
     PowerupManager* _powerupManager;
     MessagingSystem* _messagingSystem;
     UI* _ui;
+    SFXManager* _sfxManager;
 
     static constexpr float PAUSE_TIME_BUFFER = 0.5f;
     static constexpr float POWERUP_FREQUENCY = 7.5f;    // time between minimum powerup spawn

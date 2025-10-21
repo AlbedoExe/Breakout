@@ -66,6 +66,9 @@
     <ClCompile Include="PowerupSplitBall.cpp">
       <Filter>Powerups</Filter>
     </ClCompile>
+    <ClCompile Include="SFXManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="PowerupSplitBall.h">
       <Filter>Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="SFXManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

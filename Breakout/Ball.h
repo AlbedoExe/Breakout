@@ -3,12 +3,12 @@
 
 
 class GameManager;  // forward declaration
-
+class SFXManager;
 
 
 class Ball {
 public:
-    Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall);
+    Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall, SFXManager* sfxManager);
     ~Ball();
     void update(float dt);
     void render();
@@ -26,6 +26,7 @@ private:
     float _timeWithPowerupEffect;
 
     GameManager* _gameManager;  // Reference to the GameManager
+    SFXManager* _sfxManager;
 
     //My variables
     bool _hasSplit = false;

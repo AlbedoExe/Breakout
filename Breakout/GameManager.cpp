@@ -4,7 +4,7 @@
 #include <iostream>
 
 GameManager::GameManager(sf::RenderWindow* window)
-    : _window(window), _paddle(nullptr), _brickManager(nullptr), _powerupManager(nullptr),
+    : _window(window), _paddle(nullptr), _brickManager(nullptr), _powerupManager(nullptr), _sfxManager(nullptr),
     _messagingSystem(nullptr), _ui(nullptr), _pause(false), _time(0.f), _lives(3), _pauseHold(0.f), _levelComplete(false),
     _powerupInEffect({ none,0.f }), _timeLastPowerupSpawned(0.f)
 {
@@ -17,18 +17,26 @@ GameManager::GameManager(sf::RenderWindow* window)
 
 void GameManager::initialize()
 {
+
+    //load SFX
+    _sfxManager = new SFXManager();
+    _sfxManager->initialize();
+
     _paddle = new Paddle(_window);
     _brickManager = new BrickManager(_window, this);
     _messagingSystem = new MessagingSystem(_window);
-    _balls.emplace_back(new Ball(_window, 400.0f, this, false));
+    _balls.emplace_back(new Ball(_window, 400.0f, this, false,_sfxManager));
     _powerupManager = new PowerupManager(_window, _paddle, _balls.front());
     _ui = new UI(_window, _lives, this);
-
+   
     _OriginalCentre = _window->getView().getCenter();
 
 
     // Create bricks
     _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);
+
+    //load SFX
+    _sfxManager->initialize();
 }
 
 void GameManager::update(float dt)
@@ -152,7 +160,7 @@ void GameManager::levelComplete()
 
 void GameManager::splitBall()
 {
-    _balls.emplace_back(new Ball(_window, 400.0f, this, true));
+    _balls.emplace_back(new Ball(_window, 400.0f, this, true,_sfxManager));
 
 }
 
@@ -169,3 +177,4 @@ UI* GameManager::getUI() const { return _ui; }
 Paddle* GameManager::getPaddle() const { return _paddle; }
 BrickManager* GameManager::getBrickManager() const { return _brickManager; }
 PowerupManager* GameManager::getPowerupManager() const { return _powerupManager; }
+SFXManager* GameManager::getSFXManager() const { return _sfxManager; }

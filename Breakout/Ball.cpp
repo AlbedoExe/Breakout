@@ -1,8 +1,8 @@
 #include "Ball.h"
 #include "GameManager.h" // avoid cicular dependencies
 
-Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall)
-    : _window(window), _velocity(velocity), _gameManager(gameManager), _split(splitBall),
+Ball::Ball(sf::RenderWindow* window, float velocity, GameManager* gameManager, bool splitBall,SFXManager* sfxManager)
+    : _window(window), _velocity(velocity), _gameManager(gameManager), _split(splitBall), _sfxManager(sfxManager),
     _timeWithPowerupEffect(0.f), _isFireBall(false), _isAlive(true), _direction({1,1})
 {
     _sprite.setRadius(RADIUS);
@@ -51,12 +51,14 @@ void Ball::update(float dt)
     // bounce on walls
     if ((position.x >= windowDimensions.x - 2 * RADIUS && _direction.x > 0) || (position.x <= 0 && _direction.x < 0))
     {
+        _sfxManager->playBallBounceSound();
         _direction.x *= -1;
     }
 
     // bounce on ceiling
     if (position.y <= 0 && _direction.y < 0)
     {
+        _sfxManager->playBallBounceSound();
         _direction.y *= -1;
     }
 
@@ -67,6 +69,7 @@ void Ball::update(float dt)
             _sprite.setPosition(0, 300);
             _direction = { 1, 1 };
             _gameManager->loseLife();
+            _sfxManager->playLoseLifeSound();
         }
         else 
         {
@@ -77,6 +80,7 @@ void Ball::update(float dt)
     // collision with paddle
     if (_sprite.getGlobalBounds().intersects(_gameManager->getPaddle()->getBounds()))
     {
+        _sfxManager->playBallBounceSound();
         _direction.y *= -1; // Bounce vertically
 
         float paddlePositionProportion = (_sprite.getPosition().x - _gameManager->getPaddle()->getBounds().left) / _gameManager->getPaddle()->getBounds().width;
@@ -91,10 +95,12 @@ void Ball::update(float dt)
     if (_isFireBall) return; // no collisisons when in fireBall mode.
     if (collisionResponse == 1)
     {
+        _sfxManager->playBrickBreakSound();
         _direction.x *= -1; // Bounce horizontally
     }
     else if (collisionResponse == 2)
     {
+        _sfxManager->playBrickBreakSound();
         _direction.y *= -1; // Bounce vertically
     }
 }
